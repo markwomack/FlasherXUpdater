@@ -1,0 +1,19 @@
+{
+    "name": "FlasherXUpdater",
+    "keywords": "firmware update",
+    "description": "This is an Arduino library that will support the updating of Teensy firmware using the FlasherX code to perform the firmware update.",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/markwomack/FlasherXUpdater"
+    },
+    "authors":
+    {
+      "name": "Mark Womack",
+      "url": "https://github.com/markwomack",
+      "maintainer": true
+    },
+    "homepage": "https://github.com/markwomack/FlasherXUpdater",
+    "version": "1.0.0",
+    "frameworks": "arduino"
+}
