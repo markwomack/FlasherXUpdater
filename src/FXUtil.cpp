@@ -67,13 +67,13 @@ void update_firmware( CRCStream *in, Stream *out, uint32_t buffer_addr, uint32_t
       DebugMsgs.debug().printfln( "abort - bad hex line %s", line );
     }
     else if (process_hex_record( &hex ) != 0) { // error on bad hex code
-      DebugMsgs.debug().printfln( "abort - invalid hex code %d", hex.code );
+      DebugMsgs.debug().printfln( "ABORT - invalid hex code %d", hex.code );
       return;
     }
     else if (hex.code == 0) { // if data record
       uint32_t addr = buffer_addr + hex.base + hex.addr - FLASH_BASE_ADDR;
       if (hex.max > (FLASH_BASE_ADDR + buffer_size)) {
-        DebugMsgs.debug().printfln( "abort - max address %08lX too large", hex.max );
+        DebugMsgs.debug().printfln( "ABORT - max address %08lX too large", hex.max );
         return;
       }
       else if (!IN_FLASH(buffer_addr)) {
@@ -82,7 +82,7 @@ void update_firmware( CRCStream *in, Stream *out, uint32_t buffer_addr, uint32_t
       else if (IN_FLASH(buffer_addr)) {
         int error = flash_write_block( addr, hex.data, hex.num );
         if (error) {
-          DebugMsgs.debug().printfln( "abort - error %02X in flash_write_block()", error );
+          DebugMsgs.debug().printfln( "ABORT - error %02X in flash_write_block()", error );
 	        return;
         }
       }
@@ -108,7 +108,7 @@ void update_firmware( CRCStream *in, Stream *out, uint32_t buffer_addr, uint32_t
     DebugMsgs.debug().printfln( "new code contains correct FSEC value %08lX", value );
   }
   else {
-    DebugMsgs.debug().printfln( "abort - FSEC value %08lX should be FFFFF9DE", value );
+    DebugMsgs.debug().printfln( "ABORT - FSEC value %08lX should be FFFFF9DE", value );
     return;
   } 
   #endif
@@ -118,7 +118,7 @@ void update_firmware( CRCStream *in, Stream *out, uint32_t buffer_addr, uint32_t
     DebugMsgs.debug().printfln( "new code contains correct target ID %s", FLASH_ID );
   }
   else {
-    DebugMsgs.debug().printfln( "abort - new code missing string %s", FLASH_ID );
+    DebugMsgs.debug().printfln( "ABORT - new code missing string %s", FLASH_ID );
     return;
   }
 
@@ -132,11 +132,11 @@ void update_firmware( CRCStream *in, Stream *out, uint32_t buffer_addr, uint32_t
 //  }
 //  
 //  if (user_lines == 0) {
-//    out->printf( "abort - user entered 0 lines\n" );
+//    out->printf( "ABORT - user entered 0 lines\n" );
 //    return;
 //  }
 //  else {
-    DebugMsgs.debug().println( "calling flash_move() to load new firmware in 5 seconds...\n" );
+    DebugMsgs.debug().println( "SUCCESS - calling flash_move() to load new firmware in 5 seconds...\n" );
     DebugMsgs.flush();
     delay(5000);
 //  }
