@@ -38,7 +38,7 @@ void FlasherXUpdater::performUpdate(Stream* updateStream) {
   
   // return from update_firmware() means error, so clean up and
   // reboot to ensure that static vars get boot-up initialized before retry
-  DebugMsgs.debug().println( "erase FLASH buffer / free RAM buffer...restarting in 5 seconds" );
+  DebugMsgs.debug().println( "ABORT - NO UPDATE, erasing FLASH buffer / free RAM buffer...restarting in 5 seconds" );
   firmware_buffer_free( buffer_addr, buffer_size );
   DebugMsgs.flush();
   delay(5000);
