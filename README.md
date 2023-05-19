@@ -14,8 +14,8 @@ on other libraries that I have written or use. Please see the
 the specific dependencies, with links to locations you can download them. However, if these dependencies
 are more than you want or need, you can see the
 [TeensyOTAViaTCP project](https://github.com/markwomack/TeensyOTAViaTCP) where the core FlasherX updating
-code does not have the dependencies. The surrounding example code has the dependcies, but you can use it
-to write your own code without the dependencies.
+code does not have the dependencies. The surrounding example code has the dependencies, but you can use it
+to write your own code without them.
 
 ## Usage
 
