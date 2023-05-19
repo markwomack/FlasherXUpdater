@@ -3,9 +3,12 @@
 // See accompanying LICENSE file for details.
 //
 
+// This is an example that demostrates perfoming a Teensy firmware
+// update from data that is provided through a TCP port.
+
 // Arduino includes
 #include <Arduino.h>
-#include <WiFiServer.h>
+#include <WiFiServer.h>      // https://github.com/adafruit/WiFiNINA/
 #include <WiFiClient.h>
 
 // My includes
@@ -13,8 +16,8 @@
 #include <TaskManager.h>     // https://github.com/markwomack/TaskManager
 #include <WiFiNetworkHub.h>  // https://github.com/markwomack/WiFiNetworkHub
 
-#include "src/CheckForTCPUpdateTask.h"
-#include "src/FlasherXUpdater.h"
+#include <CheckForTCPUpdateTask.h>
+#include <FlasherXUpdater.h>
 
 // Local includes
 #include "secrets.h"
@@ -76,7 +79,8 @@ void loop() {
     // perform the update
     FlasherXUpdater::performUpdate(checkForTCPUpdateTask.getTCPClient());
 
-    // update did not happen, and program can recover, restart task manager
+    // update was aborted before a restart was required and the program can recover
+    // restart task manager
     taskManager.start();
   }
 }
