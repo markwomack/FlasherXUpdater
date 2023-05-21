@@ -25,10 +25,13 @@ typedef struct {	//
   int lines;		// number of hex records received  
 } hex_info_t;
 
+// Default timeout for character read is 10ms
+uint32_t timeout = 10;
 
 //******************************************************************************
-// hex_info_t	struct for hex record and hex file info
+// defined methods
 //******************************************************************************
+void set_read_timeout(uint32_t timeoutInMs);
 void read_ascii_line( Stream *serial, char *line, int maxbytes,
          bool* streamHasCRLF );
 int  parse_hex_line( const char *theline, char *bytes,
@@ -153,7 +156,15 @@ void read_ascii_line( Stream *serial, char *line, int maxbytes, bool* streamHasC
   int count = 0;
   int crlfCount = 0;
   uint32_t lastReadTime = millis();
-  while(count < (maxbytes - 1) && millis() < (lastReadTime + 10)) {
+  while(true) {
+    if (count >= (maxbytes - 1)) {
+      DebugMsgs.debug().printfln("ERROR - Max bytes read: %s, %d", line, strlen(line));
+      break;
+    }
+    if (millis() >= (lastReadTime + timeout)) {
+      DebugMsgs.debug().printfln("ERROR - Timeout (%d) exceeded: %s, %d", timeout, line, strlen(line));
+      break;
+    }
     if (serial->available()) {
       c = serial->read();
       lastReadTime = millis();
@@ -299,4 +310,8 @@ int parse_hex_line( const char *theline, char *bytes,
   if (((sum & 255) + (cksum & 255)) & 255)
     return 0;     /* checksum error */
   return 1;
+}
+
+void set_read_timeout(uint32_t timeoutInMs) {
+  timeout = timeoutInMs;
 }

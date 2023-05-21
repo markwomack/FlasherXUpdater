@@ -16,10 +16,8 @@
 #include <TaskManager.h>     // https://github.com/markwomack/TaskManager
 #include <WiFiNetworkHub.h>  // https://github.com/markwomack/WiFiNetworkHub
 
-//#include <CheckForTCPUpdateTask.h>
-//#include <FlasherXUpdater.h>
-#include "src/CheckForTCPUpdateTask.h"
-#include "src/FlasherXUpdater.h"
+#include <CheckForTCPUpdateTask.h>
+#include <FlasherXUpdater.h>
 
 // Local includes
 #include "secrets.h"
@@ -78,11 +76,15 @@ void loop() {
     // stop normal operation
     taskManager.stop();
 
+    // Give TCP a slightly longer timeout
+    FlasherXUpdater::setTimeout(30);
+    
     // perform the update
-    FlasherXUpdater::performUpdate(checkForTCPUpdateTask.getTCPClient());
+    FlasherXUpdater::performUpdate(checkForTCPUpdateTask.getUpdateStream());
 
     // update was aborted before a restart was required and the program can recover
     // restart task manager
+    DebugMsgs.debug().println("Update was aborted, restarting normal operation");
     taskManager.start();
   }
 }

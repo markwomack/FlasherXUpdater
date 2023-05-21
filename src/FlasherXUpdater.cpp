@@ -12,6 +12,10 @@ extern "C" {
 
 #include "FlasherXUpdater.h"
 
+void FlasherXUpdater::setTimeout(uint32_t timeoutInMs) {
+  set_read_timeout(timeoutInMs);
+}
+
 void FlasherXUpdater::performUpdate(Stream* updateStream) {
 
   CRCStream* crcStream = getCRCStream(updateStream);
@@ -38,10 +42,10 @@ void FlasherXUpdater::performUpdate(Stream* updateStream) {
   
   // return from update_firmware() means error, so clean up and
   // reboot to ensure that static vars get boot-up initialized before retry
-  DebugMsgs.debug().println( "ABORT - NO UPDATE, erasing FLASH buffer / free RAM buffer...restarting in 5 seconds" );
-  firmware_buffer_free( buffer_addr, buffer_size );
+  DebugMsgs.debug().println( "ABORT - NO UPDATE, erasing FLASH buffer / free RAM buffer...restarting in 10 seconds" );
   DebugMsgs.flush();
-  delay(5000);
+  firmware_buffer_free( buffer_addr, buffer_size );
+  delay(10000);
   REBOOT;
 }
 

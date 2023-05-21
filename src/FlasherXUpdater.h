@@ -14,6 +14,7 @@
 
 class FlasherXUpdater {
   public:
+    static void setTimeout(uint32_t timeoutInMs);
     static void performUpdate(Stream* updateStream);
 
   private:

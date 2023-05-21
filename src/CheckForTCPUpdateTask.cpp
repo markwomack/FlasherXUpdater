@@ -9,17 +9,12 @@
 // Local includes
 #include "CheckForTCPUpdateTask.h"
 
-CheckForTCPUpdateTask::CheckForTCPUpdateTask() {
+CheckForTCPUpdateTask::CheckForTCPUpdateTask() : CheckForUpdateTask() {
   _tcpServer = 0;
-  _updateIsAvailable = false;
 }
 
 void CheckForTCPUpdateTask::setTCPServer(WiFiServer* tcpServer) {
   _tcpServer = tcpServer;
-}
-
-WiFiClient* CheckForTCPUpdateTask::getTCPClient() {
-  return &_tcpClient;
 }
     
 void CheckForTCPUpdateTask::start(void) { 
@@ -27,7 +22,7 @@ void CheckForTCPUpdateTask::start(void) {
     DebugMsgs.debug().println("TCP Server not specified!");
   }
   
-  _updateIsAvailable = false;
+  CheckForUpdateTask::start();
 }
     
 void CheckForTCPUpdateTask::update(void) {
@@ -37,10 +32,10 @@ void CheckForTCPUpdateTask::update(void) {
   // and indicate an update is now available
   if (tcpClient) {
     _tcpClient = tcpClient;
-    _updateIsAvailable = true;
+    _updateAvailable = true;
   }
 }
 
-bool CheckForTCPUpdateTask::updateIsAvailable() {
-  return _updateIsAvailable;
+Stream* CheckForTCPUpdateTask::getUpdateStream() {
+  return (Stream*)&_tcpClient;
 }
