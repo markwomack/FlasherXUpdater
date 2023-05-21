@@ -1,11 +1,12 @@
 # FlasherXUpdater
 
 ## Introduction
-This is an Arduino library that will support the updating of Teensy firmware that is transferred via
-USB, UART, or TCP. It uses the FlasherX code to perform the actual firmware update, and provides code
-to detect when update data is available. It also provides data integrity checks with size and a CRC32
-check to verify the data has been transferred successfully. It packages all of this code into an Arduino
-library so that it can be easily reused across Arduino sketches.
+This is an Arduino library that will support the updating of Teensy firmware from data that is
+transferred via USB, UART, or TCP. It uses the [FlasherX code](https://github.com/joepasquariello/FlasherX)
+to perform the actual firmware update, and provides code to detect when update data is available. It
+also provides data integrity checks with size and a CRC32 value to verify the data has been transferred
+successfully. It packages all of this code into an Arduino library so that it can be easily reused
+across Arduino sketches.
 
 ## Dependencies
 Because this is a library that I use on a regular basis on my own projects, the code is also dependent
@@ -43,7 +44,7 @@ dialog in the directory that the .hex file is located.
 
 Once you have the location of the .hex file, you can use one of the provided
 [scripts](https://github.com/markwomack/FlasherXUpdater/tree/main/scripts) to send the data to the desired
-destination. The scripts will prepend some required data to the .hex file. It will add the file size and
-CRC32 values of the .hex file to the beginning of the .hex file. The resulting file is then sent for the
-update. The performUpdate and modified FlasherX code will double check these values after the .hex file
-contents have been processed. If the values do not match, then the update will be aborted.
+destination. The scripts will add the file size and CRC32 value of the .hex file to the beginning of the
+.hex file. The resulting file is then sent for the update. The performUpdate and modified FlasherX code
+will double check these values after the .hex file contents have been processed. If the values do not
+match, then the update will be aborted.
