@@ -10,7 +10,7 @@
 #                ------------- ----- ------------
 #                      ^         ^        ^ file contents to send over tcp
 #                      |         | target port to send the content to
-#                      | target ip address to send the conent to
+#                      | target ip address to send the content to
 
 # modified file that will be sent
 f=$(echo $3.tcp)

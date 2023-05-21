@@ -7,8 +7,8 @@
 #include <Stream.h>
 #include "CRCStream.h"
 
-void read_ascii_line( Stream *serial, char *line, int maxbytes, bool* streamHasCRLF );
-void update_firmware( CRCStream *in, Stream *out,
-			uint32_t buffer_addr, uint32_t buffer_size );
+void read_ascii_line( Stream *serial, char *line, int maxbytes,
+         bool* streamHasCRLF );
+void update_firmware( CRCStream *in, uint32_t buffer_addr, uint32_t buffer_size );
 
 #endif

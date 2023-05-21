@@ -34,7 +34,7 @@ void FlasherXUpdater::performUpdate(Stream* updateStream) {
    buffer_size/1024, IN_FLASH(buffer_addr) ? "FLASH" : "RAM",
     buffer_addr, buffer_addr + buffer_size );
 
-  update_firmware(crcStream, (Stream*)&Serial, buffer_addr, buffer_size);
+  update_firmware(crcStream, buffer_addr, buffer_size);
   
   // return from update_firmware() means error, so clean up and
   // reboot to ensure that static vars get boot-up initialized before retry
@@ -49,9 +49,9 @@ CRCStream* FlasherXUpdater::getCRCStream(Stream* updateStream) {
   uint32_t expectedSize = 0;
   uint32_t expectedCRC = 0;
   
-  uint8_t buffer[25];
-  int count = 0;
-  while (updateStream->available()) {
+  uint8_t buffer[12]; // max uint32 will be 10 chars long
+  uint32_t count = 0;
+  while (updateStream->available() && count < sizeof(buffer)) {
     int data = updateStream->read();
     if (data != -1) {
       if (data == '!') {
@@ -70,7 +70,7 @@ CRCStream* FlasherXUpdater::getCRCStream(Stream* updateStream) {
   }
 
   count = 0;
-  while (updateStream->available()) {
+  while (updateStream->available() && count < sizeof(buffer)) {
     count += updateStream->readBytes(buffer + count, 9 - count);
     if (count == 9) {
       if (buffer[8] == '!') {

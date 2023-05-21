@@ -29,20 +29,20 @@ typedef struct {	//
 //******************************************************************************
 // hex_info_t	struct for hex record and hex file info
 //******************************************************************************
-void read_ascii_line( Stream *serial, char *line, int maxbytes, bool* streamHasCRLF );
+void read_ascii_line( Stream *serial, char *line, int maxbytes,
+         bool* streamHasCRLF );
 int  parse_hex_line( const char *theline, char *bytes,
 	unsigned int *addr, unsigned int *num, unsigned int *code );
 int  process_hex_record( hex_info_t *hex );
-void update_firmware( Stream *in, Stream *out,
-			uint32_t buffer_addr, uint32_t buffer_size );
+void update_firmware( Stream *in, uint32_t buffer_addr, uint32_t buffer_size );
 
 //******************************************************************************
 // update_firmware()	read hex file and write new firmware to program flash
 //******************************************************************************
-void update_firmware( CRCStream *in, Stream *out, uint32_t buffer_addr, uint32_t buffer_size )
+void update_firmware( CRCStream *in, uint32_t buffer_addr, uint32_t buffer_size )
 {
-  static char line[96];					// buffer for hex lines
-  static char data[32] __attribute__ ((aligned (8)));	// buffer for hex data
+  static char line[96];		                // buffer for hex lines
+  static char data[32] __attribute__ ((aligned (8))); // buffer for hex data
   hex_info_t hex = {					// intel hex info struct
     data, 0, 0, 0,					//   data,addr,num,code
     0, 0xFFFFFFFF, 0, 					//   base,min,max,
@@ -57,14 +57,10 @@ void update_firmware( CRCStream *in, Stream *out, uint32_t buffer_addr, uint32_t
   while (!hex.eof)  {
 
     read_ascii_line( in, line, sizeof(line), &streamHasCRLF);
-    // reliability of transfer via USB is improved by this printf/flush
-    if (in == (Stream*)&Serial) {
-      Serial.printf( "%s\n", line );
-      Serial.flush();
-    }
 
     if (parse_hex_line( (const char*)line, hex.data, &hex.addr, &hex.num, &hex.code ) == 0) {
-      DebugMsgs.debug().printfln( "abort - bad hex line %s", line );
+      DebugMsgs.debug().printfln( "ABORT - bad hex line '%s', length: %d", line, strlen(line) );
+      return;
     }
     else if (process_hex_record( &hex ) != 0) { // error on bad hex code
       DebugMsgs.debug().printfln( "ABORT - invalid hex code %d", hex.code );
@@ -153,30 +149,42 @@ void update_firmware( CRCStream *in, Stream *out, uint32_t buffer_addr, uint32_t
 //******************************************************************************
 void read_ascii_line( Stream *serial, char *line, int maxbytes, bool* streamHasCRLF )
 {
-  int c=0, nchar=0;
-  while (serial->available()) {
-    c = serial->read();
-    if (c == '\n' || c == '\r') {
-      *streamHasCRLF = true;
-      continue;
-    }
-    else {
-      line[nchar++] = c;
-      break;
-    }
-  }
-  while (nchar < maxbytes && !(c == '\n' || c == '\r')) {
+  int c;
+  int count = 0;
+  int crlfCount = 0;
+  uint32_t lastReadTime = millis();
+  while(count < (maxbytes - 1) && millis() < (lastReadTime + 10)) {
     if (serial->available()) {
       c = serial->read();
-      line[nchar++] = c;
+      lastReadTime = millis();
+    } else {
+      continue;
+    }
+    
+    // if c is a CR or LF
+    if (c == '\r' || c == '\n') {
+      if (count == 0) {
+        // use this as indication that lines have CRLF
+        *streamHasCRLF = true;
+      } else {
+        if (*streamHasCRLF) {
+          crlfCount++;
+          if (crlfCount == 2) {
+            // reached end of line
+            break;
+          }
+        } else {
+          // reached end of line
+          break;
+        }
+      }
+    } else {
+      line[count++] = c;
     }
   }
-  line[nchar-1] = 0;	// null-terminate
-
-  // drop the extra cr/lf now
-  if (*streamHasCRLF && serial->available()) {
-    serial->read();
-  }
+  
+  // null terminate
+  line[count] = 0;
 }
 
 //******************************************************************************

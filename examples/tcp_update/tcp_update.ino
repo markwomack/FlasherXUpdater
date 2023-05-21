@@ -16,8 +16,10 @@
 #include <TaskManager.h>     // https://github.com/markwomack/TaskManager
 #include <WiFiNetworkHub.h>  // https://github.com/markwomack/WiFiNetworkHub
 
-#include <CheckForTCPUpdateTask.h>
-#include <FlasherXUpdater.h>
+//#include <CheckForTCPUpdateTask.h>
+//#include <FlasherXUpdater.h>
+#include "src/CheckForTCPUpdateTask.h"
+#include "src/FlasherXUpdater.h"
 
 // Local includes
 #include "secrets.h"
