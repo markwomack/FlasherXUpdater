@@ -44,8 +44,8 @@ void FlasherXUpdater::performUpdate(Stream* updateStream) {
   // reboot to ensure that static vars get boot-up initialized before retry
   DebugMsgs.debug().println( "ABORT - NO UPDATE, erasing FLASH buffer / free RAM buffer...restarting in 10 seconds" );
   DebugMsgs.flush();
-  firmware_buffer_free( buffer_addr, buffer_size );
   delay(10000);
+  firmware_buffer_free( buffer_addr, buffer_size );
   REBOOT;
 }
 
