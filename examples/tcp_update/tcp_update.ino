@@ -39,7 +39,7 @@ void setup() {
   
   DebugMsgs.enableLevel(ALL);
   
-  // Configure and start the WiFi network hub
+  // Configure and start the WiFi network hub (you can use TeensyNetworkHub for NativeEthernet instead...)
   networkHub.setPins(SPI_MOSI_PIN, SPI_MISO_PIN, SPI_SCK_PIN, SPI_CS_PIN, RESET_PIN, BUSY_PIN);
   networkHub.setLocalIPAddress(HOST_IP_ADDRESS);
   if (!networkHub.begin(SECRET_SSID, SECRET_PASS, DebugMsgs.getPrint())) {
