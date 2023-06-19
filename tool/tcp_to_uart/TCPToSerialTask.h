@@ -7,8 +7,8 @@
 #define TCPTOSERIALTASK_H
 
 #include <DebugMsgs.h>
-#include <WiFiServer.h>
-#include <WiFiClient.h>
+#include <NetworkServer.h>
+#include <NetworkClient.h>
 #include <Task.h>
 
 class TCPToSerialTask : public Task {
@@ -17,7 +17,7 @@ class TCPToSerialTask : public Task {
       _hasTCPClient = false;
     };
     
-    void setTCPServer(WiFiServer* tcpServer) {
+    void setTCPServer(NetworkServer* tcpServer) {
       _tcpServer = tcpServer;
     };
 
@@ -27,7 +27,7 @@ class TCPToSerialTask : public Task {
     
     void update(void) {
       if (!_hasTCPClient) {
-        WiFiClient tcpClient = _tcpServer->available();
+        NetworkClient tcpClient = _tcpServer->available();
         if (tcpClient) {
           DebugMsgs.debug().println("New TCP update, sending over serial");
           DebugMsgs.flush();
@@ -53,8 +53,8 @@ class TCPToSerialTask : public Task {
     }
 
   private:
-    WiFiServer* _tcpServer;
-    WiFiClient _tcpClient;
+    NetworkServer* _tcpServer;
+    NetworkClient _tcpClient;
     bool _hasTCPClient;
     uint32_t _totalSize;
 };
