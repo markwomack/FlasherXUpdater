@@ -9,17 +9,18 @@ This library has dependencies on other libraries that I use on a regular basis.
   [Task class](https://github.com/markwomack/TaskManager/blob/main/src/Task.h) and the
   [examples](https://github.com/markwomack/FlasherXUpdater/tree/main/examples)
   use the TaskManager to manage the tasks.
-- [WiFi Network Hub](https://github.com/markwomack/WiFiNetworkHub) - This is a
-  library that will manage the connection to a WiFi network. This network hub is
+- [Teensy Network Hub](https://github.com/markwomack/TeensyNetworkHub) - This is a
+  library that will manage the connection to a network. This network hub is
   used in the [tcp_update example](https://github.com/markwomack/FlasherXUpdater/tree/main/examples/tcp_update)
   and [tcp_to_uart tool](https://github.com/markwomack/FlasherXUpdater/tree/main/tool/tcp_to_uart).
-  WiFi Network Hub is currently written to
-  use that [Adafruit AirLift](https://www.adafruit.com/product/4201) or an
-  equivalent ESP32 board for connecting to the WiFi network.
-- [WiFiNINA](https://github.com/adafruit/WiFiNINA/) - The CheckForTCPUpdateTask
-  uses classes that are defined by the WiFiNINA library, and the WiFi Network
-  Hub library is dependent on this library as well. The version it is expecting
-  is the forked version maintained by Adafruit.
+  WiFi Network Hub that is curently used is written to
+  use the [Adafruit AirLift](https://www.adafruit.com/product/4201) or an
+  equivalent ESP32 board for connecting to the WiFi network. Native ethernet is also
+  supported by the Teensy Network Hub, and switching is trvial. Please see the
+  Teensy Network Hub home page for information.
+- [WiFiNINA](https://github.com/adafruit/WiFiNINA/) - The WiFi Network Hub
+  uses the the WiFiNINA library. The version it is expecting is the forked version
+  maintained by Adafruit.
 - [FlasherX](https://github.com/joepasquariello/FlasherX) - The code to update
   the Teensy firmware is FlasherX. The code itself is included in this library,
   but it has been slightly modified to add the CRC32 check, to remove the user
