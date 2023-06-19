@@ -13,7 +13,7 @@ CheckForTCPUpdateTask::CheckForTCPUpdateTask() : CheckForUpdateTask() {
   _tcpServer = 0;
 }
 
-void CheckForTCPUpdateTask::setTCPServer(WiFiServer* tcpServer) {
+void CheckForTCPUpdateTask::setTCPServer(NetworkServer* tcpServer) {
   _tcpServer = tcpServer;
 }
     
@@ -26,8 +26,8 @@ void CheckForTCPUpdateTask::start(void) {
 }
     
 void CheckForTCPUpdateTask::update(void) {
-  WiFiClient tcpClient = _tcpServer->available();
-
+  NetworkClient tcpClient = _tcpServer->available();
+  
   // If a client was returned, store it for future use
   // and indicate an update is now available
   if (tcpClient) {
@@ -37,5 +37,6 @@ void CheckForTCPUpdateTask::update(void) {
 }
 
 Stream* CheckForTCPUpdateTask::getUpdateStream() {
-  return (Stream*)&_tcpClient;
+  Stream* retVal = (Stream*)&_tcpClient;
+  return retVal;
 }

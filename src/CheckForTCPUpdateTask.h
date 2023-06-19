@@ -8,8 +8,8 @@
 
 // Arduino includes
 #include <Arduino.h>
-#include <WiFiServer.h>
-#include <WiFiClient.h>
+#include <NetworkServer.h>
+#include <NetworkClient.h>
 
 // Local includes
 #include "CheckForUpdateTask.h"
@@ -21,7 +21,7 @@ class CheckForTCPUpdateTask : public CheckForUpdateTask {
   public:
     CheckForTCPUpdateTask();
    
-    void setTCPServer(WiFiServer* tcpServer);
+    void setTCPServer(NetworkServer* tcpServer);
     
     void start(void);
     void update(void);
@@ -29,8 +29,8 @@ class CheckForTCPUpdateTask : public CheckForUpdateTask {
     Stream* getUpdateStream();
 
   protected:
-    WiFiServer* _tcpServer;
-    WiFiClient _tcpClient;
+    NetworkServer* _tcpServer;
+    NetworkClient _tcpClient;
 };
 
 #endif // CHECKFORTCPUPDATETASK_H

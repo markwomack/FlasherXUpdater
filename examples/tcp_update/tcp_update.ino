@@ -3,18 +3,16 @@
 // See accompanying LICENSE file for details.
 //
 
-// This is an example that demostrates perfoming a Teensy firmware
+// This is an example that demonstrates perfoming a Teensy firmware
 // update from data that is provided through a TCP port.
 
 // Arduino includes
 #include <Arduino.h>
-#include <WiFiServer.h>      // https://github.com/adafruit/WiFiNINA/
-#include <WiFiClient.h>
 
 // My includes
 #include <DebugMsgs.h>       // https://github.com/markwomack/ArduinoLogging
 #include <TaskManager.h>     // https://github.com/markwomack/TaskManager
-#include <WiFiNetworkHub.h>  // https://github.com/markwomack/WiFiNetworkHub
+#include <WiFiNetworkHub.h>  // https://github.com/markwomack/TeensyNetworkHub
 
 #include <CheckForTCPUpdateTask.h>
 #include <FlasherXUpdater.h>
@@ -24,13 +22,13 @@
 #include "pin_assignments.h"
 
 // This is the TCP port number monitored for a firmware update
-const uint32_t TCP_SERVER_PORT(55555);
+const uint32_t TCP_SERVER_PORT(50005);
 
 // This is the fixed IP address for this sketch
 const IPAddress HOST_IP_ADDRESS(IPAddress(192, 168, 86, 101));
 
 // This maintains the connection to the WiFi
-WiFiNetworkHub networkHub;
+WiFiNetworkHub networkHub = WiFiNetworkHub::getInstance();
 
 // This is the task that will monitor a TCP port for a firmware update
 CheckForTCPUpdateTask checkForTCPUpdateTask;
@@ -43,15 +41,18 @@ void setup() {
   
   // Configure and start the WiFi network hub
   networkHub.setPins(SPI_MOSI_PIN, SPI_MISO_PIN, SPI_SCK_PIN, SPI_CS_PIN, RESET_PIN, BUSY_PIN);
-  networkHub.setHostIPAddress(HOST_IP_ADDRESS);
-  if (!networkHub.start(SECRET_SSID, SECRET_PASS, DebugMsgs.getPrint())) {
+  networkHub.setLocalIPAddress(HOST_IP_ADDRESS);
+  if (!networkHub.begin(SECRET_SSID, SECRET_PASS, DebugMsgs.getPrint())) {
     DebugMsgs.error().println("Abort - error starting WiFi network hub");
     while(true){;}
   }
-  networkHub.printWiFiStatus(DebugMsgs.getPrint());
+
+  networkHub.printStatus(DebugMsgs.getPrint());
 
   // Set the tcp port to be monitored into the checkForTCPUpdateTask
-  checkForTCPUpdateTask.setTCPServer(networkHub.getTCPServer(TCP_SERVER_PORT));
+  NetworkServer* tcpServer = networkHub.getServer(TCP_SERVER_PORT);
+  tcpServer->begin();
+  checkForTCPUpdateTask.setTCPServer(tcpServer);
   
   // Configure the task manager to execute tasks
   
@@ -63,6 +64,9 @@ void setup() {
   
   // Start normal operations
   taskManager.start();
+
+  DebugMsgs.debug().println()
+    .print("Listening for update on ").print(networkHub.getLocalIPAddress()).print(" ").println(TCP_SERVER_PORT);
 }
 
 void loop() {

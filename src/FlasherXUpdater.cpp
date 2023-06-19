@@ -20,6 +20,8 @@ void FlasherXUpdater::performUpdate(Stream* updateStream) {
 
   CRCStream* crcStream = getCRCStream(updateStream);
   if (!crcStream) {
+    DebugMsgs.debug().println( "ERROR: unable to create CRCStream" );
+    DebugMsgs.flush();
     return;
   }
   
@@ -28,7 +30,7 @@ void FlasherXUpdater::performUpdate(Stream* updateStream) {
 
   // create flash buffer to hold new firmware
   if (firmware_buffer_init( &buffer_addr, &buffer_size ) == 0) {
-    DebugMsgs.debug().println( "unable to create buffer" );
+    DebugMsgs.debug().println( "ERROR: unable to create buffer" );
     DebugMsgs.flush();
     free(crcStream);
     return;
